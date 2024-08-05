@@ -1,10 +1,11 @@
 #include "myView.h"
 
-float Plate::scale = 0.23f;
+float Plate::scale = 0.6f;
 float Plate::height_cnt = 0.0f;
+float Plate::width_max = 0.0f;
 // status: 0 最初板材, 1 需要切割的板材, 2 板材余料
 Plate::Plate(ImVec2 size_) : size(size_), status(1) {}
-Plate::Plate(ImVec2 size_, int status_) : size(size_), status(status_) { pos = ImVec2(0, height_cnt), height_cnt += size.y + 100; }
+Plate::Plate(ImVec2 size_, int status_) : size(size_), status(status_) {}
 ImVec2 Plate::get_pos() const { return pos; }
 ImVec2 Plate::get_size() const { return size; }
 int Plate::get_status() const { return status; }
@@ -12,8 +13,10 @@ void Plate::set_pos(ImVec2 pos_) { pos = pos_; }
 void Plate::set_size(ImVec2 size_) { size = size_; }
 void Plate::set_status(int status_) { status = status_; }
 bool Plate::check_size() const { return size.x > 0 && size.y > 0; }
-bool Plate::operator<(const Plate& other) const { return pos.x != other.get_pos().x ? pos.x < other.get_pos().x : pos.y < other.get_pos().y; }
-bool Plate::operator>(const Plate& other) const { return pos.x != other.get_pos().x ? pos.x > other.get_pos().x : pos.y > other.get_pos().y; }
+void Plate::swap_width_height() { std::swap(size.x, size.y); }
+void Plate::update_pos() { pos = ImVec2(0, height_cnt); height_cnt += size.y + 100; width_max = std::max(width_max, size.x); }
+bool Plate::operator<(const Plate& other) const { return size.x == other.get_size().x ? pos.y < other.get_size().y : size.x < other.get_size().x; }
+bool Plate::operator>(const Plate& other) const { return size.x == other.get_size().x ? pos.y > other.get_size().y : size.x > other.get_size().x; }
 ImVec2 operator+(const ImVec2& a, const ImVec2& b) { return {a.x + b.x, a.y + b.y}; }
 ImVec2 operator*(const ImVec2& a, const float& x){ return {a.x * x, a.y * x}; };
 ImVec2 operator-(const ImVec2& a, const ImVec2& b) { return {a.x - b.x, a.y - b.y}; }
@@ -22,19 +25,17 @@ void Plate::draw(const ImVec2& offset) {
     ImColor color = status == 1 ? ImColor(137, 207, 240) : ImColor(0, 255, 0);
     ImGui::GetWindowDrawList()->AddRect(pos * scale + offset, (pos + size) * scale + offset, color);
     std::string msg = std::to_string(int(size.x)) + " x " + std::to_string(int(size.y));
+
     ImGui::GetWindowDrawList()->AddText(pos * scale + offset, ImColor(255, 255, 255), msg.c_str());
 }
 
-void Plate::swap_width_height() {
-    std::swap(size.x, size.y);
-}
 
 // 初始化数据(测试)
 void init() {
     plate_draw_list.clear();
     free_plates.clear();
     req_plates.clear();
-    // free_plates.insert({{200, 100}, 0});
+    Plate::height_cnt = 0;
     float a[9] = {1800, 1800, 1800, 1800, 1800, 1750, 1750, 1600, 1600};
     float b[9] = { 200,  200,  200, 190, 190, 200, 200, 180, 180};
     for (int i = 0; i < 9; i++) {
@@ -97,23 +98,29 @@ bool cut_plate(Plate req) {
     if (tmp_it == free_plates.end())
         return false;
 
-    // 将成功裁剪的板材加入渲染集合
-    req.set_pos(tmp_it->get_pos());
+    // 找到了合适的板子，将迭代器从free_plates删除，后续用free_plate更新其他信息
+    Plate free_plate;
+    free_plate = *tmp_it;
+    free_plates.erase(tmp_it);
+    // 若用到了初始板材，更新坐标(height_cnt)，便于绘图
+    if (free_plate.get_status() == 0) {
+        free_plate.update_pos(), free_plate.set_status(2);
+
+    }
+    // 将成功裁剪的板材加入渲染集合(req板材的坐标跟随选中的free_plate)
+    req.set_pos(free_plate.get_pos());
     plate_draw_list.push_back(req);
 
     //  没有以剩余长度为指标，而是根据差值选择更优的切法，使得余料趋近正方形
-    sub = tmp_it->get_size() - req.get_size();
+    sub = free_plate.get_size() - req.get_size();
     bool flag = sub.x != sub.y
                 ? sub.x > sub.y
                 : tmp_it->get_size().x > tmp_it->get_pos().y;
     float w = req.get_size().x;
     float h = req.get_size().y;
+
     Plate a, b;
-    // 标记为余料，将余料添加到free集合里，使用过的删掉
-    a = b = *tmp_it;
-    a.set_status(2);
-    b.set_status(2);
-    free_plates.erase(tmp_it);
+    a = b = free_plate;
 
     if (flag) {
         // 横着切
@@ -139,14 +146,14 @@ bool cut_plate(Plate req) {
 void draw_plates() {
     ImVec2 start_pos = ImGui::GetCursorScreenPos();
     for (auto &i : plate_draw_list) {
-        i.draw(start_pos);
+        i.draw(start_pos + ImVec2(10, 10));
     }
 }
 
 // 板材显示窗口
 void plate_view() {
-    ImGui::SetNextWindowContentSize(ImVec2(300, 2000));
-    ImGui::Begin("my window");
+    ImGui::SetNextWindowContentSize(ImVec2(std::max(300.0f, Plate::width_max * Plate::scale + 10), std::max(300.0f, Plate::height_cnt * Plate::scale)));
+    ImGui::Begin("my window", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysVerticalScrollbar);
     draw_plates();
     ImGui::End();
 }
@@ -155,7 +162,7 @@ void plate_view() {
 void operator_view() {
     ImGui::Begin("Operator window");
     ImGui::Text("Plate::height_cnt = %.2f", Plate::height_cnt);
-    ImGui::SliderFloat("float", &Plate::scale, 0.1f, 1.0f);
+    ImGui::SliderFloat("scale factor", &Plate::scale, 0.1f, 2.0f);
     ImGui::SetNextItemWidth(100.0f);
     ImGui::InputFloat("width", &input_w); ImGui::SameLine();
     ImGui::SetNextItemWidth(100.0f);

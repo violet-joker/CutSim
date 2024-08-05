@@ -16,13 +16,15 @@ public:
     void set_size(ImVec2 size_);
     void set_status(int status_);
     bool check_size() const;
-    void draw(const ImVec2& offset);
     void swap_width_height();
+    void update_pos();
+    void draw(const ImVec2& offset);
     bool operator<(const Plate& other) const;
     bool operator>(const Plate& other) const;
 public:
     static float scale;
     static float height_cnt;
+    static float width_max;
 private:
     ImVec2 pos;
     ImVec2 size;
@@ -39,6 +41,7 @@ static float input_w, input_h;
 ImVec2 operator+(const ImVec2& a, const ImVec2& b);
 ImVec2 operator*(const ImVec2& a, const float& x);
 ImVec2 operator-(const ImVec2& a, const ImVec2& b);
+
 void draw_plates();
 void init();
 void calc_plate();
