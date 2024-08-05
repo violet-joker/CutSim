@@ -1,0 +1,46 @@
+[
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
+},
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/src/myView.cpp.o", "src/myView.cpp"],
+  "file": "src/myView.cpp"
+},
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/build/imgui/imgui_impl_opengl3.cpp.o", "build/imgui/imgui_impl_opengl3.cpp"],
+  "file": "build/imgui/imgui_impl_opengl3.cpp"
+},
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/build/imgui/imgui_demo.cpp.o", "build/imgui/imgui_demo.cpp"],
+  "file": "build/imgui/imgui_demo.cpp"
+},
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/build/imgui/imgui.cpp.o", "build/imgui/imgui.cpp"],
+  "file": "build/imgui/imgui.cpp"
+},
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/build/imgui/imgui_tables.cpp.o", "build/imgui/imgui_tables.cpp"],
+  "file": "build/imgui/imgui_tables.cpp"
+},
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/build/imgui/imgui_draw.cpp.o", "build/imgui/imgui_draw.cpp"],
+  "file": "build/imgui/imgui_draw.cpp"
+},
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/build/imgui/imgui_impl_glfw.cpp.o", "build/imgui/imgui_impl_glfw.cpp"],
+  "file": "build/imgui/imgui_impl_glfw.cpp"
+},
+{
+  "directory": "/home/xf/CPP/CutSim",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-DNDEBUG", "-o", "build/.objs/main/linux/x86_64/release/build/imgui/imgui_widgets.cpp.o", "build/imgui/imgui_widgets.cpp"],
+  "file": "build/imgui/imgui_widgets.cpp"
+}]
